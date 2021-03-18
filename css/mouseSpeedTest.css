@@ -1,0 +1,29 @@
+.adiv {
+  height: 300px;
+  width: 300px;
+  border: 1px solid black;
+  vertical-align: middle;
+  display:table-cell;
+  text-align: center;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+
+.info {
+  color: #aaaaaa;
+  margin-top: 30px;
+}
+
+.velocity {
+  text-align: left;
+}
+
+#velocity {
+  margin-left:110px;
+}
+
+#velocityX, #velocityY {
+  margin-left:135px;
+}
