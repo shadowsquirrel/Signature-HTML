@@ -1,4 +1,8 @@
-.frame-A1
+.frame-A-1
 {
     border:3px solid black;
+}
+.frame-A-2
+{
+    display:none;
 }
