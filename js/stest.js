@@ -88,19 +88,30 @@ update(new MouseSpeed.Velocity());
 
 new MouseSpeed({ selector: '.frame-A-1', velocityOnMouseDownOnly: true, handler: update })
 
-// to place the copy on the screen
-// html2canvas(document.body).then(function(canvas) {
-//     document.body.appendChild(canvas);
-// });
+
 
 var myStore = function() {
 
-    html2canvas(document.body).then(function(canvas) {
-        var storage = getElementById('myStorageDiv')
-        storage.appendChild(canvas);
-    });
+    $('.frame-A-1').css({'transition':'0s', 'border':'0'});
+    $('#sketchpad').css({'transition':'0s', 'margin-top':'80px'});
+
+    setTimeout(()=>{
+        var myCanvas = document.getElementById('canvasDivId');
+
+        html2canvas(myCanvas).then(function(canvas) {
+            var storage = document.getElementById('myStorageDiv');
+            storage.appendChild(canvas);
+        });
+    }, 5)
+
+
+    setTimeout(()=>{
+        $('.frame-A-1').css({'transition':'0s', 'border':'3px solid black'})
+        $('#sketchpad').css({'transition':'0s', 'margin-top':'0px'});
+    }, 10)
 
 }
+
 
 var storeCanvas = function() {
 
@@ -116,5 +127,23 @@ var storeCanvas = function() {
         link.target = '_blank';
         link.click();
     })
+
+}
+
+
+
+var saveButton = document.getElementById('saveButton');
+var clearButton = document.getElementById('clearButton');
+
+
+saveButton.onclick = function() {
+
+    myStore();
+
+}
+
+clearButton.onclick = function() {
+
+    sketchpad.clear();
 
 }

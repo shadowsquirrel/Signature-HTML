@@ -1,8 +1,24 @@
+.frame-0
+{
+    width:900px;
+}
+
+
 .frame-A-1
 {
     border:3px solid black;
+    width:803px;
+    height:406px;
+    margin-left:54px;
 }
 .frame-A-2
 {
     display:none;
+}
+.frame-A-storage
+{
+    display:flex;
+    flex-direction:column-reverse;
+    transform-origin: top;
+    transform:scale(0.5);
 }
