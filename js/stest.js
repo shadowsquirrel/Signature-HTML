@@ -35,25 +35,44 @@ var v2S = function(v) {
         // i = 5;
         // x0 = -100;
 
-        // L = 540;
+        // L = 1080;
         // k = 0.0013;
         // i = -1.7;
         // x0 = 3000;
+
+        //
+        // L = 540;
+        // k = 0.00115;
+        // i = 0.5;
+        // x0 = 2500;
 
         // L = 13.5;
         // k = 0.024;
         // i = 0.5;
         // x0 = -640;
 
-        L = 5;
-        k = 0.024;
-        i = 6;//4.8;
-        x0 = -640;
+        // L = 5;
+        // k = 0.024;
+        // i = 6;//4.8;
+        // x0 = -640;
+
+
+        // L = 30;
+        // k = 0.0177;
+        // i = 1;//4.8;
+        // x0 = -200;
+
+
+        L = 13;
+        k = 0.008;
+        i = 2;
+        x0 = -200;
+
 
 
         size = (L / (1 + Math.exp(-k * (-v-x0))) ) + i;
 
-        size = Math.ceil(size);
+        // size = Math.ceil(size);
 
         return size;
 
@@ -65,13 +84,97 @@ var v2S = function(v) {
 
 }
 
+myMouseDown = false;
+
+$('body').mousedown(function(e) {
+    if (e.button === 0) {
+        myMouseDown = true;
+        // console.log(123123);
+    }
+});
+
+
+$('body').mouseup(function(e) {
+    if (e.button === 0) {
+        myMouseDown = false;
+        // console.log('asdasdasdas');
+    }
+});
+
+var increaseIncrement = 1;
+var decreaseIncrement = 1;
+
+// var increaseRatio = 1.2;
+// var decreaseRatio = 0.75;
+
+var increase = function() {
+
+    sketchpad.penSize = sketchpad.penSize + increaseIncrement;
+    // sketchpad.penSize = sketchpad.penSize * increaseRatio;
+
+}
+
+
+var decrease = function() {
+
+    sketchpad.penSize = sketchpad.penSize - decreaseIncrement;
+    // sketchpad.penSize = sketchpad.penSize * decreaseRatio;
+
+}
+
+
+var convert = function(current, goal) {
+
+    console.log('conversion function');
+
+    console.log('current size: ' + current);
+    console.log('goal size: ' + goal);
+
+    if(goal > current) {
+
+        console.log('increasing current pensize');
+
+        increase();
+
+    } else if (current > goal) {
+
+        console.log('decreasing current pensize');
+
+        decrease();
+
+    } else {
+
+        console.log('***DO NOTHING***');
+        // when equal do nothing
+    }
+
+}
 
 // updating penSize depending on
 var update = function(velocity) {
 
-    var v = velocity.velocity();
-    var s = v2S(v);
-    sketchpad.penSize = s;
+
+
+    if(myMouseDown) {
+
+        var v = velocity.velocity();
+        var s = v2S(v);
+        myPenSize = sketchpad.penSize;
+        convert(myPenSize, s);
+        // sketchpad.penSize = s;
+
+        console.log('linear speed: ' + v);
+        console.log('size: ' + s);
+
+    } else {
+
+        myPenSize = sketchpad.penSize;
+        convert(myPenSize, 13);
+        // console.log('inactive pen converting to original size');
+        // console.log('size: ' + sketchpad.penSize);
+
+    }
+
 
     // debug view
     $('#myPenSize').html('size: ' + s);

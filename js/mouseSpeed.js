@@ -1,8 +1,12 @@
+var myMouseDown;
+
+
 var MouseSpeed = function(config) {
   var updateInterval = 50;
   var velocity = new MouseSpeed.Velocity();
   var timerToken;
   var mousedown = !config.velocityOnMouseDownOnly;
+  myMouseDown = mousedown;
 
   if (config.velocityOnMouseDownOnly) {
     $('body').mouseup(function(e) { if (e.button === 0) { mousedown = false; } });
