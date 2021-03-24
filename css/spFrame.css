@@ -1,4 +1,4 @@
-.frame-0
+.frame-A
 {
     width:900px;
 }
@@ -21,4 +21,18 @@
     flex-direction:column-reverse;
     transform-origin: top;
     transform:scale(0.5);
+}
+/*****/
+.frame-B
+{
+    width:900px;
+}
+
+
+.frame-B-1
+{
+    border:3px solid black;
+    width:803px;
+    height:406px;
+    margin-left:54px;
 }

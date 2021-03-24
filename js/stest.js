@@ -1,9 +1,7 @@
 
 // import html2canvas from 'html2canvas';
-
 $('.yoyo').css({'transition':'0s', 'font-size':'40px'});
-setTimeout(()=>{
-}, 5000)
+
 
 // initiating sketchpad
 var sketchpad = new Sketchpad({
@@ -116,9 +114,9 @@ $('body').keypress(function() {
     console.log(event.which);
 })
 
-var increaseIncrement = 0.75;
-var increaseIncrement2 = 0.25;
-var decreaseIncrement = 0.75;
+var increaseIncrement = 0.6;
+var increaseIncrement2 = 0.5;
+var decreaseIncrement = 0.6;
 
 // var increaseRatio = 1.2;
 // var decreaseRatio = 0.75;
@@ -150,14 +148,14 @@ var calibrationOn = false;
 
 var convert = function(current, goal) {
 
-    console.log('conversion function');
-
+    // console.log('conversion function');
+    //
     console.log('current size: ' + current);
-    console.log('goal size: ' + goal);
+    // console.log('goal size: ' + goal);
 
     if(goal > current) {
 
-        console.log('increasing current pensize');
+        // console.log('increasing current pensize');
 
         if(!calibrationOn) {
             increase();
@@ -168,13 +166,13 @@ var convert = function(current, goal) {
 
     } else if (current > goal) {
 
-        console.log('decreasing current pensize');
+        // console.log('decreasing current pensize');
 
         decrease();
 
     } else {
 
-        console.log('***DO NOTHING***');
+        // console.log('***DO NOTHING***');
         // when equal do nothing
     }
 
@@ -182,9 +180,6 @@ var convert = function(current, goal) {
 
 // updating penSize depending on
 var update = function(velocity) {
-
-
-
 
     if(!staticPenSize) {
 
@@ -198,8 +193,8 @@ var update = function(velocity) {
             convert(myPenSize, s);
             // sketchpad.penSize = s;
 
-            console.log('linear speed: ' + v);
-            console.log('size: ' + s);
+            // console.log('linear speed: ' + v);
+            // console.log('size: ' + s);
 
         } else {
 
@@ -216,10 +211,10 @@ var update = function(velocity) {
     }
 
     // debug view
-    $('#myPenSize').html('size: ' + s);
-    $('#velocity').html('linear speed: ' + v);
-    $('#velocityX').html('x: ' + velocity.velocityX());
-    $('#velocityY').html('y: ' + velocity.velocityY());
+    // $('#myPenSize').html('size: ' + s);
+    // $('#velocity').html('linear speed: ' + v);
+    // $('#velocityX').html('x: ' + velocity.velocityX());
+    // $('#velocityY').html('y: ' + velocity.velocityY());
 
 
 };
@@ -229,6 +224,8 @@ update(new MouseSpeed.Velocity());
 
 
 new MouseSpeed({ selector: '.frame-A-1', velocityOnMouseDownOnly: true, handler: update })
+
+var testing;
 
 
 
@@ -243,6 +240,8 @@ var myStore = function() {
         html2canvas(myCanvas).then(function(canvas) {
             var storage = document.getElementById('myStorageDiv');
             storage.appendChild(canvas);
+            console.log(canvas);
+            testing = canvas;
         });
     }, 5)
 
@@ -288,4 +287,139 @@ clearButton.onclick = function() {
 
     sketchpad.clear();
 
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+// When true, moving the mouse draws on the canvas
+let isDrawing = false;
+let x = 0;
+let y = 0;
+
+const myPics = document.getElementById('discretePad');
+const context = myPics.getContext('2d');
+
+var previousCanvasState;
+
+var storeState = function() {
+
+    previousCanvasState = context.getImageData(0,0,myPics.width,myPics.height);
+
+}
+
+var refreshState = function() {
+
+    context.putImageData(previousCanvasState, 0, 0);
+
+}
+
+
+
+
+// event.offsetX, event.offsetY gives the (x,y) offset from the edge of the canvas.
+
+// Add the event listeners for mousedown, mousemove, and mouseup
+var firstDown = 0;
+var secondDown = 0;
+var mouseDownCounter = 0;
+var originX = 0;
+var originY = 0;
+
+
+
+
+myPics.addEventListener('mousedown', e => {
+
+    mouseDownCounter = mouseDownCounter + 1;
+    if(mouseDownCounter % 2 === 1) {
+        firstDown = 1;
+        secondDown = 0;
+    } else {
+        firstDown = 0;
+        secondDown = 1;
+    }
+
+  x = e.offsetX;
+  y = e.offsetY;
+
+  if(firstDown) {
+      originX = e.offsetX;
+      originY = e.offsetY;
+      storeState();
+  }
+
+  if(secondDown) {
+      // originX = e.offsetX;
+      // originY = e.offsetY;
+      storeState();
+  }
+
+  isDrawing = true;
+
+});
+
+myPics.addEventListener('mousemove', e => {
+  if (isDrawing === true) {
+      if(firstDown) {
+         refreshState();
+          drawLine(context, originX, originY, e.offsetX, e.offsetY);
+          // x = e.offsetX;
+          // y = e.offsetY;
+      }
+
+  }
+});
+
+
+
+window.addEventListener('mouseup', e => {
+  if (isDrawing === true) {
+      if(firstDown) {
+          // refreshState();
+          // drawLine(context, originX, originY, e.offsetX, e.offsetY);
+      }
+
+      if(secondDown) {
+          // drawLine(context, x, y, e.offsetX, e.offsetY);
+          // x = 0;
+          // y = 0;
+          isDrawing = false;
+      }
+
+
+  }
+});
+
+// var dynamicColor = function(context) {
+//
+//     if(firstDown) {
+//         context.strokeStyle = 'black';
+//     }
+//
+//     if(secondDown) {
+//          context.strokeStyle = 'red';
+//     }
+//
+// }
+
+
+
+function drawLine(context, x1, y1, x2, y2) {
+  context.beginPath();
+  // dynamicColor(context);
+  context.strokeStyle = 'black';
+  // context.strokeStyle = 'black';
+  context.lineWidth = 10;
+  context.moveTo(x1, y1);
+  context.lineTo(x2, y2);
+  context.stroke();
+  context.closePath();
 }
