@@ -226,36 +226,69 @@ update(new MouseSpeed.Velocity());
 new MouseSpeed({ selector: '.frame-A-1', velocityOnMouseDownOnly: true, handler: update })
 
 var testing;
-
+var signComplexity;
 
 
 var myStore = function() {
 
-    $('.frame-A-1').css({'transition':'0s', 'border':'0'});
-    $('#sketchpad').css({'transition':'0s', 'margin-top':'80px'});
+    if(signComplexity === 0) {
 
-    setTimeout(()=>{
-        var myCanvas = document.getElementById('canvasDivId');
+        $('.frame-B-1').css({'transition':'0s', 'border':'0'});
+        $('#discretePad').css({'transition':'0s', 'margin-top':'100px'});
 
-        html2canvas(myCanvas).then(function(canvas) {
-            var storage = document.getElementById('myStorageDiv');
-            storage.appendChild(canvas);
-            console.log(canvas);
-            testing = canvas;
-        });
-    }, 5)
+        setTimeout(()=>{
+
+            var myCanvas = document.getElementById('canvasDivId2');
+
+            html2canvas(myCanvas).then(function(canvas) {
+                var storage = document.getElementById('myStorageDiv');
+                canvas.setAttribute('style', 'margin-top:20px;height:406px;width:808px;');
+                storage.appendChild(canvas);
+                console.log(canvas);
+                testing = canvas;
+            });
+
+        }, 5)
+
+        setTimeout(()=>{
+
+            $('.frame-B-1').css({'transition':'0s', 'border':'3px solid black'})
+            $('#discretePad').css({'transition':'0s', 'margin-top':'0px'});
+
+        }, 10)
+
+    } else {
 
 
-    setTimeout(()=>{
-        $('.frame-A-1').css({'transition':'0s', 'border':'3px solid black'})
-        $('#sketchpad').css({'transition':'0s', 'margin-top':'0px'});
-    }, 10)
+        $('.frame-A-1').css({'transition':'0s', 'border':'0'});
+        $('#sketchpad').css({'transition':'0s', 'margin-top':'120px'});
+
+        setTimeout(()=>{
+
+            var myCanvas = document.getElementById('canvasDivId');
+
+            html2canvas(myCanvas).then(function(canvas) {
+                var storage = document.getElementById('myStorageDiv');
+                storage.appendChild(canvas);
+                console.log(canvas);
+                testing = canvas;
+            });
+
+        }, 5)
+
+        setTimeout(()=>{
+
+            $('.frame-A-1').css({'transition':'0s', 'border':'3px solid black'})
+            $('#sketchpad').css({'transition':'0s', 'margin-top':'0px'});
+
+        }, 10)
+
+    }
 
 }
 
 
 var storeCanvas = function() {
-
 
     var container = document.getElementById('sketchpad');
     var container = document.getElementById('canvasDivId'); //specific element on page
@@ -273,21 +306,7 @@ var storeCanvas = function() {
 
 
 
-var saveButton = document.getElementById('saveButton');
-var clearButton = document.getElementById('clearButton');
 
-
-saveButton.onclick = function() {
-
-    myStore();
-
-}
-
-clearButton.onclick = function() {
-
-    sketchpad.clear();
-
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -306,6 +325,15 @@ let y = 0;
 
 const myPics = document.getElementById('discretePad');
 const context = myPics.getContext('2d');
+
+const emptyDiscreteCanvas =  myPics.getContext('2d');
+const emptyCanvas = emptyDiscreteCanvas.getImageData(0,0,myPics.width,myPics.height);
+
+
+
+
+
+
 
 var previousCanvasState;
 
@@ -398,17 +426,7 @@ window.addEventListener('mouseup', e => {
   }
 });
 
-// var dynamicColor = function(context) {
-//
-//     if(firstDown) {
-//         context.strokeStyle = 'black';
-//     }
-//
-//     if(secondDown) {
-//          context.strokeStyle = 'red';
-//     }
-//
-// }
+
 
 
 
@@ -422,4 +440,73 @@ function drawLine(context, x1, y1, x2, y2) {
   context.lineTo(x2, y2);
   context.stroke();
   context.closePath();
+}
+
+
+//
+// const myStoredSP = document.getElementById('sketchpad');
+// const storedSPContest = myStoredSP.getContext('2d');
+// previousCanvasState2 = storedSPContest.getImageData(0,0,myStoredSP.width,myStoredSP.height);
+// storedSPContest.putImageData(previousCanvasState2, 0, 0);
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+var saveButton = document.getElementById('saveButton');
+var clearButton = document.getElementById('clearButton');
+
+var discreteButton = document.getElementById('discreteButton');
+var staticButton = document.getElementById('staticButton');
+var dynamicButton = document.getElementById('dynamicButton');
+
+
+
+saveButton.onclick = function() {
+
+    myStore();
+
+}
+
+clearButton.onclick = function() {
+
+    if(signComplexity === 0) {
+        context.putImageData(emptyCanvas, 0, 0);
+    } else {
+        sketchpad.clear();
+    }
+
+
+}
+
+discreteButton.onclick = function() {
+
+    signComplexity = 0;
+
+    $('.frame-A-1').css({'display':'none'});
+    $('.frame-B-1').css({'display':'block'});
+    staticPenSize = 1;
+
+}
+
+staticButton.onclick = function() {
+
+    signComplexity = 1;
+
+    $('.frame-A-1').css({'display':'block'});
+    $('.frame-B-1').css({'display':'none'});
+    staticPenSize = 1;
+
+}
+
+dynamicButton.onclick = function() {
+
+    signComplexity = 2;
+
+    $('.frame-A-1').css({'display':'block'});
+    $('.frame-B-1').css({'display':'none'});
+    staticPenSize = 0;
+
 }
