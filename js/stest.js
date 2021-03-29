@@ -10,6 +10,15 @@ var sketchpad = new Sketchpad({
   height: 400,
 });
 
+var sliderPenSize = 15;
+
+var sizeSlider = document.getElementById('penSizeSlider');
+sizeSlider.oninput = function() {
+
+    sliderPenSize = parseFloat(sizeSlider.value);
+
+}
+
 var myPenSize;
 
 // if false, static penSize of 10
@@ -67,7 +76,8 @@ var v2S = function(v) {
         // x0 = -200;
 
 
-        L = 15;
+        // L = 15;
+        L = sliderPenSize * 2;
         k = 0.022;
         i = 2;
         x0 = -100;
@@ -82,7 +92,7 @@ var v2S = function(v) {
 
     } else {
 
-        return 10;
+        return sliderPenSize;
 
     }
 
@@ -114,9 +124,9 @@ $('body').keypress(function() {
     console.log(event.which);
 })
 
-var increaseIncrement = 0.6;
-var increaseIncrement2 = 0.5;
-var decreaseIncrement = 0.6;
+var increaseIncrement = 0.5;
+var increaseIncrement2 = 1;//0.5;
+var decreaseIncrement = 0.65;
 
 // var increaseRatio = 1.2;
 // var decreaseRatio = 0.75;
@@ -151,7 +161,7 @@ var convert = function(current, goal) {
     // console.log('conversion function');
     //
     console.log('current size: ' + current);
-    // console.log('goal size: ' + goal);
+    console.log('goal size: ' + goal);
 
     if(goal > current) {
 
@@ -193,21 +203,21 @@ var update = function(velocity) {
             convert(myPenSize, s);
             // sketchpad.penSize = s;
 
-            // console.log('linear speed: ' + v);
-            // console.log('size: ' + s);
+            console.log('linear speed: ' + v);
+            console.log('size: ' + s);
 
         } else {
 
             calibrationOn = true;
             myPenSize = sketchpad.penSize;
-            convert(myPenSize, 13);
+            convert(myPenSize, sliderPenSize);
             // console.log('inactive pen converting to original size');
             // console.log('size: ' + sketchpad.penSize);
 
         }
 
     } else {
-        sketchpad.penSize = 11;
+        sketchpad.penSize = sliderPenSize;
     }
 
     // debug view
@@ -219,6 +229,8 @@ var update = function(velocity) {
 
 };
 
+sliderPenSize = 10;
+sketchpad.penSize = sliderPenSize;
 
 update(new MouseSpeed.Velocity());
 
@@ -234,7 +246,7 @@ var myStore = function() {
     if(signComplexity === 0) {
 
         $('.frame-B-1').css({'transition':'0s', 'border':'0'});
-        $('#discretePad').css({'transition':'0s', 'margin-top':'100px'});
+        $('#discretePad').css({'transition':'0s', 'margin-top':'120px'});
 
         setTimeout(()=>{
 
@@ -248,14 +260,14 @@ var myStore = function() {
                 testing = canvas;
             });
 
-        }, 5)
+        }, 1)
 
         setTimeout(()=>{
 
             $('.frame-B-1').css({'transition':'0s', 'border':'3px solid black'})
             $('#discretePad').css({'transition':'0s', 'margin-top':'0px'});
 
-        }, 10)
+        }, 2)
 
     } else {
 
@@ -274,14 +286,14 @@ var myStore = function() {
                 testing = canvas;
             });
 
-        }, 5)
+        }, 1)
 
         setTimeout(()=>{
 
             $('.frame-A-1').css({'transition':'0s', 'border':'3px solid black'})
             $('#sketchpad').css({'transition':'0s', 'margin-top':'0px'});
 
-        }, 10)
+        }, 2)
 
     }
 
@@ -435,7 +447,7 @@ function drawLine(context, x1, y1, x2, y2) {
   // dynamicColor(context);
   context.strokeStyle = 'black';
   // context.strokeStyle = 'black';
-  context.lineWidth = 10;
+  context.lineWidth = sliderPenSize;
   context.moveTo(x1, y1);
   context.lineTo(x2, y2);
   context.stroke();
