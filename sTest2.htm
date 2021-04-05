@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="css/frame.css">
+    <link rel="stylesheet" href="css/spFrame.css">
+    <link rel="stylesheet" href="css/mouseSpeedTest.css">
+
+    <script src='js/html2canvas.js'></script>
+    <script src='js/sketchpad.js'></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+    <title>Testing Signature Tech</title>
+
+</head>
+<body>
+    <div id=start></div>
+
+    <div class = 'wrap  noselect'>
+
+        <div class = 'all'>
+
+            <div class='frame-A'>
+
+                <div class='frame-buttons' data-html2canvas-ignore>
+                    <input type='range' min = '1' max = '20' class = 'penSlider' value = '10' id = 'penSizeSlider' data-html2canvas-ignore />
+                </div>
+
+
+                <div class='frame-buttons' data-html2canvas-ignore>
+                    <button type="button" data-html2canvas-ignore id='discreteButton'>Discrete</button>
+                    <button type="button" data-html2canvas-ignore id='staticButton'>Static</button>
+                    <button type="button" data-html2canvas-ignore id='dynamicButton'>Dynamic</button>
+                </div>
+
+                <!-- NAME TITLE DIV -->
+                <div class='frame-A-0'>
+
+                    <p class='yoyo' data-html2canvas-ignore>
+                        Mallik Dubois
+                    </p>
+
+                </div>
+
+                <!-- SKETCH DIV -->
+                <div class='frame-A-1' id='canvasDivId'>
+
+                    <canvas id="sketchpad" class=sketchPad-0></canvas>
+
+                    <!-- create a line place it on the canvas as the place to sign -->
+
+
+                </div>
+
+                <div class='frame-B-1' id='canvasDivId2'>
+
+                    <canvas id="discretePad" class=discretePad width='800' height='400'></canvas>
+
+                    <!-- create a line place it on the canvas as the place to sign -->
+
+
+                </div>
+
+                <!-- BUTTON DIV -->
+                <div class='frame-buttons'>
+                    <button type="button" data-html2canvas-ignore id='saveButton'>Save</button>
+                    <button type="button" data-html2canvas-ignore id='clearButton'>Clear</button>
+                </div>
+
+                <!-- DEBUGGING DIV -->
+                <div class='frame-A-2'>
+
+                    <!-- button to save as a file -->
+
+                    <!-- button to  -->
+
+                    <!-- button to undo  -->
+
+                    <!-- button to submit -->
+
+
+                    <!-- mouseSpeed Test Div -->
+                    <div class="adiv">
+                        <div class="velocity" id="myPenSize">5</div>
+                        <div class="velocity" id="velocity">0</div>
+                        <div class="velocity" id="velocityX">0</div>
+                        <div class="velocity"  id="velocityY">0</div>
+                        <div>(pixels per second)</div>
+                        <div class="info">(tracking shown on mousedown, button 0 only)</div>
+                    </div>
+
+                </div>
+
+                <!-- STORAGE/DISPLAY OF SAVED IMAGES -->
+                <div class='frame-A-storage' id='myStorageDiv'  data-html2canvas-ignore>
+                </div>
+
+
+            </div>
+
+            <div class='frame-C'>
+
+                <div class='frame-C-0'>
+
+                    <p class='yoyo' data-html2canvas-ignore>
+                        Mallik Dubois
+                    </p>
+
+                    <div class='frame-C-1' id='canvasDivId3'>
+
+                        <canvas id="continuousPad" class=continuousPad width='800' height='400'></canvas>
+
+                        <!-- create a line place it on the canvas as the place to sign -->
+
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id=end></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src='js/mouseSpeed.js'></script>
+    <script src="js/stest2.js"></script>
+
+</body>
+</html>

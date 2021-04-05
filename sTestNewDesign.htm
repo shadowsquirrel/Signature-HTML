@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="css/frame.css">
+    <link rel="stylesheet" href="css/spFrameNewDesign.css">
+
+    <!-- <script src='js/html2canvas.js'></script> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+    <title>Testing Signature Tech</title>
+
+</head>
+<body>
+    <div id=start></div>
+
+    <div class = 'wrap  noselect' style='justify-content:flex-start;'>
+
+        <div class = 'all' style='margin-right:0px;margin-left:3%;'>
+
+            <div class='frame-buttons-A'>
+                <button type="button" id='discreteButton' class=switch>Discrete</button>
+                <button type="button" id='staticButton' class=switch>Static</button>
+                <button type="button" id='dynamicButton' class=switch>Dynamic</button>
+                <button type="button" id='smoothButton' class=switch>Smooth</button>
+            </div>
+
+            <div class='frame-A'>
+
+                <!-- SKETCH DIV -->
+                <div class='frame-A-0' id='pad-0'>
+
+                    <div class='frame-A-0-0' id='pad-0-0'>
+
+                        <canvas id="signaturePad" class=signaturePad width='1000' height='500'></canvas>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class='frame-buttons-B'>
+                <button type="button" id='saveButton'>Save</button>
+                <button type="button" id='clearButton'>Clear</button>
+            </div>
+
+        </div>
+
+
+        <div class='frame-savedCanvas' id='frame-savedCanvas'>
+
+        </div>
+
+    </div>
+
+    <div id=end></div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src='js/mouseSpeed.js'></script>
+    <script src="js/sTest0.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+.frame-buttons-A
+{
+    margin-top:18px;
+    margin-left:344px;
+    position:fixed;
+}
+.frame-buttons-B
+{
+    margin-top:580px;
+    margin-left:440px;
+    position:fixed;
+}
+.frame-A
+{
+    position:fixed;
+    margin-top:64px;
+    margin-bottom:16px;
+}
+.frame-A-0
+{
+    display:flex;
+    flex-direction: column;
+    border:3px solid black;
+    width:1003px;
+    height:503px;
+}
+.frame-A-0-0
+{
+    display:flex;
+    width:1000px;
+    height:500px;
+
+}
+.signaturePad
+{
+    position:absolute;
+}
+.switch
+{
+    opacity:0.7;
+    background-color:gray;
+    color:black;
+}
+.switch:hover
+{
+    opacity:1;
+    background-color:yellow;
+}
+.frame-savedCanvas
+{
+    margin-top:22px;
+    margin-left:668px;
+    display:flex;
+    flex-direction:column-reverse;
+    transform:scale(0.25);
+    transform-origin:top;
+}
