@@ -454,6 +454,10 @@ var draw = function() {
 // ---------- QUADRATIC CURVE TO ---------- //
 var smoothDraw = function() {
 
+    console.log(ppts.length);
+
+
+
     tmp_ctx.beginPath();
     tmp_ctx.moveTo(ppts[0].x, ppts[0].y);
 
@@ -485,6 +489,17 @@ var smoothDraw = function() {
     tmp_ctx.quadraticCurveTo(ppts[i].x, ppts[i].y, ppts[i + 1].x, ppts[i + 1].y);
     tmp_ctx.stroke();
     tmp_ctx.closePath();
+
+    if(ppts.length > 200) {
+
+        var tempArray =  ppts.slice(-6);
+
+        ctx.drawImage(tmp_canvas, 0, 0);
+        // tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+
+        ppts = tempArray;
+
+    }
 
 }
 
