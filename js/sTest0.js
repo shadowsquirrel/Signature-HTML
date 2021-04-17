@@ -3,6 +3,10 @@
 var canvas = document.querySelector('#signaturePad');
 var ctx = canvas.getContext('2d');
 
+var canvas_signHere = document.querySelector('#signHere');
+var ctx_signHere = canvas_signHere.getContext('2d');
+
+
 // var sketch = document.querySelector('#sketch');
 // var sketch_style = getComputedStyle(sketch);
 // canvas.width = parseInt(sketch_style.getPropertyValue('width'));
@@ -16,6 +20,16 @@ tmp_canvas.id = 'tmp_canvas';
 tmp_canvas.width = canvas.width;
 tmp_canvas.height = canvas.height;
 // tmp_canvas.setAttribute('position', "absolute");
+
+
+// Creating a storage canvas
+var str_canvas = document.createElement('canvas');
+var str_ctx = str_canvas.getContext('2d');
+str_canvas.id = 'str_canvas';
+str_canvas.width = canvas.width;
+str_canvas.height = canvas.height;
+
+
 
 var pad = document.querySelector('#pad-0-0');
 pad.appendChild(tmp_canvas);
@@ -42,6 +56,7 @@ var mouseDownCounter = 0;
 var originX = 0;
 var originY = 0;
 var previousCanvasState;
+var str_previousCanvasState;
 // line points (not used)
 var discrete_ppts = []
 
@@ -55,15 +70,32 @@ tmp_canvas.addEventListener('mousemove', function(e) {
     point.x = typeof e.offsetX !== 'undefined' ? e.offsetX : e.layerX;
     point.y = typeof e.offsetY !== 'undefined' ? e.offsetY : e.layerY;
 
+    //ADD HERE TOUCH ABILITY AND DISABILING DEFAULT TOUCH EVENTS
+
 }, false);
 
 
-/* Drawing on Paint App */
+// setting up temporary context canvas
 tmp_ctx.lineWidth = point.s;
 tmp_ctx.lineJoin = 'round';
 tmp_ctx.lineCap = 'round';
 tmp_ctx.strokeStyle = 'black';
 tmp_ctx.fillStyle = 'black';
+
+// setting up storage context canvas
+str_ctx.lineWidth = point.s;
+str_ctx.lineJoin = 'round';
+str_ctx.lineCap = 'round';
+str_ctx.strokeStyle = 'black';
+str_ctx.fillStyle = 'black';
+
+
+var copyToStorage  = function() {
+
+    // dont know yet
+
+}
+
 
 // MOUSE DOWN
 tmp_canvas.addEventListener('mousedown', function(e) {
@@ -104,6 +136,8 @@ tmp_canvas.addEventListener('mousedown', function(e) {
         // deactivate onPaint
         tmp_canvas.removeEventListener('mousemove', onPaint, false);
 
+
+
         mouseDownCounter = mouseDownCounter + 1;
 
         if(mouseDownCounter % 2 === 1) {
@@ -129,7 +163,9 @@ tmp_canvas.addEventListener('mousedown', function(e) {
         // activate drawLine
         // canvas.addEventListener('mousemove', drawLine, false);
 
-        storeDiscreteState();
+
+        storeDiscreteState(ctx);
+        storeDiscreteState(str_ctx);
 
     }
 
@@ -190,38 +226,27 @@ var updatePad = function() {
 //------------------------------------------------------------------------//
 //------------------------------------------------------------------------//
 
-// canvas.addEventListener('mousemove', e => {
-//
-//     if (discreteInk) {
-//
-//         if(firstDown) {
-//             redoState();
-//             drawLine(ctx, originX, originY, e.offsetX, e.offsetY);
-//             // x = e.offsetX;
-//             // y = e.offsetY;
-//         }
-//
-//
-//     }
-//
-// });
 
+var storeDiscreteState = function(context) {
 
-var storeDiscreteState = function() {
-
-    previousCanvasState = ctx.getImageData(0,0,canvas.width,canvas.height);
+    previousCanvasState = context.getImageData(0,0,canvas.width,canvas.height);
+    // str_previousCanvasState = str_ctx.getImageData(0,0,canvas.width,canvas.height);
 
 }
 
-var redoState = function() {
+var redoState = function(context) {
 
-    ctx.putImageData(previousCanvasState, 0, 0);
+
+    context.putImageData(previousCanvasState, 0, 0);
+    // str_ctx.putImageData(str_previousCanvasState, 0, 0);
 
 }
 
 var drawLine = function(context, x1, y1, x2, y2, s) {
 
     if(firstDown) {
+
+        redoState(context);
 
         // console.log('inside drawline');
 
@@ -233,10 +258,6 @@ var drawLine = function(context, x1, y1, x2, y2, s) {
         context.lineTo(x2, y2);
         context.stroke();
         context.closePath();
-
-
-        // console.log('origin: ' + x1 + ', ' + y1);
-        // console.log('end point: ' + x2 + ', ' + y2);
 
     }
 
@@ -372,8 +393,25 @@ var quasiConvert = function(current, goal) {
 
 }
 
+
+//----------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
+//------------------------- VELOCITY TO PEN SIZE -----------------------------//
+//----------------------------------------------------------------------------//
+//----------------------------------------------------------------------------//
+
 // called by the mouseSpeed object
+// velocity is calculated by the MouseSpeed object mouseSpeed.js
+// within the selector frame with the updateInk handler
+// updateInk receives the velocity and calculates the new Ink size and
+// updates the pen size global variable point.s through quasiConvert
+// where quasiConvert then calls increase or decrease functions to
+// smooth out the pen size change
 var updateInk = function(velocity) {
+
+    $('#velocity').html('linear: ' + velocity.velocity());
+    $('#velocityX').html('x: ' + velocity.velocityX());
+    $('#velocityY').html('y: ' + velocity.velocityY());
 
     fillInk = false;
 
@@ -383,11 +421,6 @@ var updateInk = function(velocity) {
         var goalSize = v2S(v);
         var currentSize = point.s;
         quasiConvert(currentSize, goalSize);
-
-        // console.log('linear speed: ' + v);
-        // console.log('Current size: ' + currentSize);
-        // console.log('Goal size: ' + goalSize);
-        // console.log('Updated size: ' + point.s);
 
     } else {
 
@@ -403,7 +436,8 @@ updateInk(new MouseSpeed.Velocity());
 
 // construct a new mouseSpeed object on the canvas to calculate the speed and
 // make the speed to ink size conversion
-new MouseSpeed({ selector: '.frame-A-0-0', velocityOnMouseDownOnly: true, handler: updateInk })
+// make it active dependent on mouseDown if you wish
+new MouseSpeed({ selector: '.frame-A-0-0', velocityOnMouseDownOnly: false, handler: updateInk })
 
 
 //------------------------------------------------------------------------//
@@ -415,31 +449,24 @@ new MouseSpeed({ selector: '.frame-A-0-0', velocityOnMouseDownOnly: true, handle
 
 
 // ----------- LINE TO ------------//
+
 var draw = function() {
 
-    // tmp_ctx.beginPath();
-    // tmp_ctx.moveTo(ppts[0].x, ppts[0].y);
-    //
-    // for (var i = 1; i < ppts.length - 1; i++) {
-    //
-    //     tmp_ctx.lineWidth = ppts[i].s;
-    //     tmp_ctx.lineTo(ppts[i].x, ppts[i].y);
-    //     tmp_ctx.stroke();
-    //
-    // }
-    //
-    // tmp_ctx.closePath();
-
+    // last two points on the array of points
+    // starting point
     var x1 = ppts[ppts.length - 2].x;
     var y1 = ppts[ppts.length - 2].y;
+    // end point
     var x2 = ppts[ppts.length - 1].x;
     var y2 = ppts[ppts.length - 1].y;
-
+    // end point pen size
     var s = ppts[ppts.length - 1].s;
 
+    // standart rounding
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
 
+    // draw a line the standart way
     ctx.beginPath();
     ctx.lineWidth = s;
     ctx.strokeStyle = 'black';
@@ -450,13 +477,9 @@ var draw = function() {
 
 }
 
-
 // ---------- QUADRATIC CURVE TO ---------- //
+
 var smoothDraw = function() {
-
-    console.log(ppts.length);
-
-
 
     tmp_ctx.beginPath();
     tmp_ctx.moveTo(ppts[0].x, ppts[0].y);
@@ -474,11 +497,7 @@ var smoothDraw = function() {
         tmp_ctx.lineWidth = ppts[i].s;
 
         tmp_ctx.quadraticCurveTo(ppts[i].x, ppts[i].y, c1, d1);
-        // tmp_ctx.lineTo(ppts[i].x, ppts[i].y);
         tmp_ctx.stroke();
-
-        // NOT SURE IF WE NEED TO CLOSE PATH
-        // tmp_ctx.closePath();
 
     }
 
@@ -495,7 +514,6 @@ var smoothDraw = function() {
         var tempArray =  ppts.slice(-6);
 
         ctx.drawImage(tmp_canvas, 0, 0);
-        // tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
         ppts = tempArray;
 
@@ -503,72 +521,48 @@ var smoothDraw = function() {
 
 }
 
-
+// ---------- main draw function --------- //
 
 var onPaint = function() {
-
 
     if(!discreteInk) {
 
         if(mouseDown) {
 
-
-
-
             // Saving all the points in an array
             ppts.push({x: point.x, y: point.y, s: point.s});
 
-            // Updating the pen size
-            // rndSize();
-
-            // console.log('second push');
-            // console.log(ppts);
-
+            //----------- IF UP TO 3 POINTS ----------//
             if (ppts.length < 3) {
-
-                // console.log('points less than 3');
-                // console.log(ppts);
-
                 var b = ppts[0];
                 tmp_ctx.beginPath();
-                //ctx.moveTo(b.x, b.y);
-                //ctx.lineTo(b.x+50, b.y+50);
                 tmp_ctx.lineWidth = b.s;
                 tmp_ctx.arc(b.x, b.y, tmp_ctx.lineWidth / 2, 0, Math.PI * 2);
                 tmp_ctx.fill();
                 tmp_ctx.closePath();
-
                 return;
-
             }
 
-
-            // IF MORE THAN 3 POINTS
+            //-------- IF MORE THAN 3 POINTS -------//
 
             // Tmp canvas is always cleared up before drawing.
             tmp_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
 
-
             if(smoothInk) {
-
                 smoothDraw();
-
             } else {
-
                 draw();
-
             }
 
         }
 
-
     } else {
 
         if(firstDown) {
-            redoState();
+            // redoState();
             drawLine(ctx, originX, originY, point.x, point.y, point.s);
-            // x = e.offsetX;
-            // y = e.offsetY;
+            drawLine(str_ctx, originX, originY, point.x, point.y, point.s);
+
         }
 
     }
@@ -598,6 +592,8 @@ var saveSignature = function() {
     // tmp_canvas.setAttribute('position', "absolute");
 
     var currentCanvasState = ctx.getImageData(0,0,canvas.width,canvas.height);
+    // var currentCanvasState = str_ctx.getImageData(0,0,canvas.width,canvas.height);
+
     savedContext.putImageData(currentCanvasState, 0, 0)
 
     var storage = document.querySelector('#frame-savedCanvas');
@@ -607,6 +603,53 @@ var saveSignature = function() {
 
 }
 
+var showInstructions = false;
+var signAbove = function() {
+
+    if(showInstructions) {
+
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.font = "40px Arial";
+        ctx.fillStyle = 'gray';
+        ctx.fillText('SIGN ABOVE', 375, 400)
+        ctx.beginPath();
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 5;
+        ctx.moveTo(150, 350);
+        ctx.lineTo(850, 350);
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.lineWidth = initialPenSize ;
+
+    }
+
+}
+
+var signAbove2 = function() {
+
+
+
+        ctx_signHere.lineCap = 'round';
+        ctx_signHere.lineJoin = 'round';
+
+        ctx_signHere.font = "40px Arial";
+        ctx_signHere.fillStyle = 'gray';
+        ctx_signHere.fillText('SIGN ABOVE', 375, 400)
+        ctx_signHere.beginPath();
+        ctx_signHere.strokeStyle = 'black';
+        ctx_signHere.lineWidth = 5;
+        ctx_signHere.moveTo(150, 350);
+        ctx_signHere.lineTo(850, 350);
+        ctx_signHere.stroke();
+        ctx_signHere.closePath();
+
+        ctx_signHere.lineWidth = initialPenSize ;
+
+
+}
 
 
 //------------------------------------------------------------------------//
@@ -633,7 +676,8 @@ saveButton.onclick = function() {
 clearButton.onclick = function() {
 
     ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
-
+    str_ctx.clearRect(0, 0, tmp_canvas.width, tmp_canvas.height);
+    signAbove();
 
 }
 
@@ -690,4 +734,12 @@ smoothButton.onclick = function() {
 
 }
 
+$('body').keypress(function() {
+    if(event.which === 105) {
+        showInstructions = 1 - showInstructions;
+    }
+})
+
+
+signAbove();
 // }());

@@ -1,3 +1,9 @@
+.velocityTrackerWrap
+{
+    position:absolute;
+    margin-top:66px;
+    margin-left:46px;
+}
 .frame-buttons-A
 {
     margin-top:18px;
@@ -54,4 +60,8 @@
     flex-direction:column-reverse;
     transform:scale(0.25);
     transform-origin:top;
+}
+.signHere
+{
+    position:absolute;
 }
